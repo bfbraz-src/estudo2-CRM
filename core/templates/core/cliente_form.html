@@ -1,0 +1,134 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ title }} - Sistema de Atendimentos{% endblock %}
+
+{% block content %}
+<div class="main-content animate-fade-in">
+    <div class="page-header">
+        <h1><i class="fas fa-user-plus me-3"></i>{{ title }}</h1>
+        <p>Preencha os dados do cliente</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-user me-2"></i>Dados do Cliente
+                </div>
+                <div class="card-body">
+                    <form method="post" id="clienteForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="id_nome" class="form-label">Nome Completo *</label>
+                                {{ form.nome }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_email" class="form-label">E-mail *</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_telefone" class="form-label">Telefone *</label>
+                                {{ form.telefone }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_cpf" class="form-label">CPF *</label>
+                                {{ form.cpf }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_cep" class="form-label">CEP *</label>
+                                {{ form.cep }}
+                                <small class="form-text text-muted">O endereço será preenchido automaticamente</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="id_logradouro" class="form-label">Logradouro *</label>
+                                {{ form.logradouro }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_numero" class="form-label">Número *</label>
+                                {{ form.numero }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_complemento" class="form-label">Complemento</label>
+                                {{ form.complemento }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_bairro" class="form-label">Bairro *</label>
+                                {{ form.bairro }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="id_cidade" class="form-label">Cidade *</label>
+                                {{ form.cidade }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_estado" class="form-label">Estado *</label>
+                                {{ form.estado }}
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-2"></i>Salvar Cliente
+                                    </button>
+                                    <a href="{% url 'cliente_list' %}" class="btn btn-secondary">
+                                        <i class="fas fa-times me-2"></i>Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Busca CEP quando o usuário sair do campo
+    $('#id_cep').on('blur', function() {
+        const cep = $(this).val();
+        if (cep) {
+            buscarCEP(cep);
+        }
+    });
+
+    // Validação do formulário
+    $('#clienteForm').on('submit', function(e) {
+        if (!validateForm($(this))) {
+            e.preventDefault();
+        }
+    });
+
+    // Validação em tempo real
+    $('input[required]').on('blur', function() {
+        const field = $(this);
+        const value = field.val().trim();
+        
+        if (!value) {
+            showFieldError(field, 'Este campo é obrigatório');
+        } else {
+            clearFieldError(field);
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Login - Sistema de Atendimentos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg animate-fade-in">
+                <div class="card-header text-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Entrar no Sistema
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="loginForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="id_username" name="username" placeholder="Usuário" required>
+                                <label for="id_username">
+                                    <i class="fas fa-user me-2"></i>Usuário
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="id_password" name="password" placeholder="Senha" required>
+                                <label for="id_password">
+                                    <i class="fas fa-lock me-2"></i>Senha
+                                </label>
+                            </div>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Entrar
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Não tem uma conta?</p>
+                        <a href="{% url 'register' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Criar Conta
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#loginForm').on('submit', function(e) {
+        if (!validateForm($(this))) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

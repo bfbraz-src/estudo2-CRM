@@ -1,0 +1,126 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ title }} - Sistema de Atendimentos{% endblock %}
+
+{% block content %}
+<div class="main-content animate-fade-in">
+    <div class="page-header">
+        <h1><i class="fas fa-calendar-plus me-3"></i>{{ title }}</h1>
+        <p>Preencha os dados do atendimento</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt me-2"></i>Dados do Atendimento
+                </div>
+                <div class="card-body">
+                    <form method="post" id="atendimentoForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="id_cliente" class="form-label">Cliente *</label>
+                                {{ form.cliente }}
+                                <small class="form-text text-muted">
+                                    Não encontrou o cliente? <a href="{% url 'cliente_create' %}" target="_blank">Cadastre aqui</a>
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_data_hora" class="form-label">Data e Hora *</label>
+                                {{ form.data_hora }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_status" class="form-label">Status *</label>
+                                {{ form.status }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="id_descricao" class="form-label">Descrição do Atendimento *</label>
+                                {{ form.descricao }}
+                                <small class="form-text text-muted">Descreva detalhadamente o que será realizado no atendimento</small>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-2"></i>Salvar Atendimento
+                                    </button>
+                                    <a href="{% url 'atendimento_list' %}" class="btn btn-secondary">
+                                        <i class="fas fa-times me-2"></i>Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Definir data mínima como hoje
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    
+    const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    $('#id_data_hora').attr('min', minDateTime);
+
+    // Validação do formulário
+    $('#atendimentoForm').on('submit', function(e) {
+        if (!validateForm($(this))) {
+            e.preventDefault();
+            return;
+        }
+
+        // Validação adicional de data
+        const dataHora = new Date($('#id_data_hora').val());
+        const agora = new Date();
+        
+        if (dataHora < agora) {
+            showFieldError($('#id_data_hora'), 'A data e hora não podem ser no passado');
+            e.preventDefault();
+            return;
+        }
+    });
+
+    // Validação em tempo real
+    $('input[required], select[required], textarea[required]').on('blur change', function() {
+        const field = $(this);
+        const value = field.val();
+        
+        if (!value || value.trim() === '') {
+            showFieldError(field, 'Este campo é obrigatório');
+        } else {
+            clearFieldError(field);
+        }
+    });
+
+    // Validação específica de data
+    $('#id_data_hora').on('change', function() {
+        const dataHora = new Date($(this).val());
+        const agora = new Date();
+        
+        if (dataHora < agora) {
+            showFieldError($(this), 'A data e hora não podem ser no passado');
+        } else {
+            clearFieldError($(this));
+        }
+    });
+});
+</script>
+{% endblock %}

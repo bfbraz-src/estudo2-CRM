@@ -1,0 +1,111 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Cadastro - Sistema de Atendimentos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg animate-fade-in">
+                <div class="card-header text-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Criar Nova Conta
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="registerForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    {{ form.first_name }}
+                                    <label for="id_first_name">
+                                        <i class="fas fa-user me-2"></i>Nome
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    {{ form.last_name }}
+                                    <label for="id_last_name">
+                                        <i class="fas fa-user me-2"></i>Sobrenome
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                {{ form.username }}
+                                <label for="id_username">
+                                    <i class="fas fa-user-circle me-2"></i>Nome de Usuário
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                {{ form.email }}
+                                <label for="id_email">
+                                    <i class="fas fa-envelope me-2"></i>E-mail
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                {{ form.password1 }}
+                                <label for="id_password1">
+                                    <i class="fas fa-lock me-2"></i>Senha
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                {{ form.password2 }}
+                                <label for="id_password2">
+                                    <i class="fas fa-lock me-2"></i>Confirmar Senha
+                                </label>
+                            </div>
+                        </div>
+
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Criar Conta
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Já tem uma conta?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Fazer Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#registerForm').on('submit', function(e) {
+        if (!validateForm($(this))) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

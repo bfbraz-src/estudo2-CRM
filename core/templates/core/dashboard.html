@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Sistema de Atendimentos{% endblock %}
+
+{% block content %}
+<div class="main-content animate-fade-in">
+    <div class="page-header">
+        <h1><i class="fas fa-tachometer-alt me-3"></i>Dashboard</h1>
+        <p>Bem-vindo ao sistema de gerenciamento de atendimentos</p>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="stats-card">
+                <i class="fas fa-users fa-2x mb-3"></i>
+                <h2 class="stats-number">{{ clientes_count }}</h2>
+                <p class="stats-label">Clientes Cadastrados</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <i class="fas fa-calendar-check fa-2x mb-3"></i>
+                <h2 class="stats-number">{{ atendimentos_count }}</h2>
+                <p class="stats-label">Total de Atendimentos</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <i class="fas fa-clock fa-2x mb-3"></i>
+                <h2 class="stats-number">{{ atendimentos_hoje }}</h2>
+                <p class="stats-label">Atendimentos Hoje</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-users me-2"></i>Gerenciar Clientes
+                </div>
+                <div class="card-body text-center">
+                    <p class="card-text">Cadastre, edite e gerencie seus clientes</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'cliente_list' %}" class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>Ver Clientes
+                        </a>
+                        <a href="{% url 'cliente_create' %}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Novo Cliente
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt me-2"></i>Gerenciar Atendimentos
+                </div>
+                <div class="card-body text-center">
+                    <p class="card-text">Agende e gerencie seus atendimentos</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'atendimento_list' %}" class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>Ver Atendimentos
+                        </a>
+                        <a href="{% url 'atendimento_create' %}" class="btn btn-warning text-white">
+                            <i class="fas fa-plus me-2"></i>Novo Atendimento
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

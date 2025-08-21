@@ -47,21 +47,27 @@ class ClienteForm(forms.ModelForm):
             }),
             'telefone': forms.TextInput(attrs={
                 'class': 'form-control', 
-                'placeholder': '(11) 99999-9999', 
-                'data-mask': '(00) 00000-0000',
-                'required': True
+                'placeholder': '(99) 99999-9999', 
+                #'pattern': '[0-9]{2}[0-9]{5}[0-9]{4}',
+                #'data-mask': '(00) 00000-0000',
+                'required': True,
+                'maxlength': '15'
             }),
             'cpf': forms.TextInput(attrs={
                 'class': 'form-control', 
                 'placeholder': '000.000.000-00', 
-                'data-mask': '000.000.000-00',
-                'required': True
+                #'pattern': '[0-9]{3}[0-9]{3}[0-9]{3}[0-9]{2}',
+                #'data-mask': '000.000.000-00',
+                'required': True,
+                'maxlength': '14'
             }),
             'cep': forms.TextInput(attrs={
                 'class': 'form-control', 
                 'placeholder': '00000-000', 
-                'data-mask': '00000-000',
-                'required': True
+                #'pattern': '[0-9]{5}[0-9]{3}',
+                #'data-mask': '00000-000',
+                'required': True,
+                'maxlength': '9'
             }),
             'logradouro': forms.TextInput(attrs={
                 'class': 'form-control', 
@@ -87,7 +93,10 @@ class ClienteForm(forms.ModelForm):
                 'placeholder': 'Cidade',
                 'required': True
             }),
-            'estado': forms.Select(attrs={'class': 'form-control'}, choices=[
+            'estado': forms.Select(attrs={
+                'class': 'form-control',
+                'required': True
+                }, choices=[
                 ('', 'Selecione...'),
                 ('AC', 'Acre'), ('AL', 'Alagoas'), ('AP', 'Amapá'), ('AM', 'Amazonas'),
                 ('BA', 'Bahia'), ('CE', 'Ceará'), ('DF', 'Distrito Federal'), ('ES', 'Espírito Santo'),
@@ -98,6 +107,32 @@ class ClienteForm(forms.ModelForm):
                 ('SP', 'São Paulo'), ('SE', 'Sergipe'), ('TO', 'Tocantins')
             ]),
         }
+    
+    def clean_telefone(self):
+        telefone = self.cleaned_data.get('telefone')
+        if telefone:
+            # Remove todos os caracteres não numéricos
+            telefone_numbers = re.sub(r'\D', '', telefone)
+            
+            # Validação do telefone (10 ou 11 dígitos)
+            if len(telefone_numbers) < 10 or len(telefone_numbers) > 11:
+                raise ValidationError('Telefone deve ter 10 ou 11 dígitos.')
+            
+            return telefone
+        return telefone
+    
+    def clean_cep(self):
+        cep = self.cleaned_data.get('cep')
+        if cep:
+            # Remove caracteres não numéricos
+            cep_numbers = re.sub(r'\D', '', cep)
+            
+            # Validação básica do CEP
+            if len(cep_numbers) != 8:
+                raise ValidationError('CEP deve ter 8 dígitos.')
+            
+            return cep
+        return cep
     
     def clean_cpf(self):
         cpf = self.cleaned_data.get('cpf')
@@ -112,6 +147,10 @@ class ClienteForm(forms.ModelForm):
             # Verifica se todos os números não são iguais
             if cpf_numbers == cpf_numbers[0] * 11:
                 raise ValidationError('CPF inválido.')
+            
+            # Algoritmo de validação do CPF
+            #if not self.validar_cpf(cpf_numbers):
+            #    raise ValidationError('CPF inválido.')
             
             # Verifica se o CPF já existe (exceto para o próprio registro)
             existing_cpf = Cliente.objects.filter(cpf=cpf)
@@ -135,6 +174,42 @@ class ClienteForm(forms.ModelForm):
                 raise ValidationError('Este email já está cadastrado.')
         
         return email
+    
+    def clean_estado(self):
+        estado = self.cleaned_data.get('estado')
+        if not estado:
+            raise ValidationError('Estado é obrigatório.')
+        return estado
+    
+    def validar_cpf(self, cpf):
+        """
+        Algoritmo completo de validação do CPF
+        """
+        # Calcula o primeiro dígito verificador
+        soma = 0
+        for i in range(9):
+            soma += int(cpf[i]) * (10 - i)
+        
+        primeiro_digito = 11 - (soma % 11)
+        if primeiro_digito >= 10:
+            primeiro_digito = 0
+        
+        if int(cpf[9]) != primeiro_digito:
+            return False
+        
+        # Calcula o segundo dígito verificador
+        soma = 0
+        for i in range(10):
+            soma += int(cpf[i]) * (11 - i)
+        
+        segundo_digito = 11 - (soma % 11)
+        if segundo_digito >= 10:
+            segundo_digito = 0
+        
+        if int(cpf[10]) != segundo_digito:
+            return False
+        
+        return True
 
 class AtendimentoForm(forms.ModelForm):
     class Meta:

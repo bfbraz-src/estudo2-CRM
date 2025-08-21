@@ -58,7 +58,7 @@
                                         <a href="{% url 'cliente_update' cliente.pk %}" class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ cliente.nome }}', '{% url 'cliente_delete_view' cliente.pk %}')">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ cliente.nome }}', '{% url 'cliente_delete' cliente.pk %}')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
